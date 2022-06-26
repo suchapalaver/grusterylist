@@ -58,12 +58,12 @@ impl ShoppingList {
         }
     }
 
-    pub fn add_groceries(&mut self) -> Result<(), ReadError> {
+    pub fn add_groceries(&mut self, path: &str) -> Result<(), ReadError> {
         // move everything off list to temp list
         let list_items: Vec<GroceriesItem> = self.groceries.drain(..).collect();
         assert!(self.groceries.is_empty());
         let sections = vec!["fresh", "pantry", "dairy", "protein", "freezer"];
-        let groceries = crate::Groceries::from_path("groceries.json")?;
+        let groceries = crate::Groceries::from_path(path)?;
         let groceries_by_section: Vec<Vec<GroceriesItem>> = {
             sections
                 .into_iter()
@@ -177,9 +177,9 @@ impl ShoppingList {
         Ok(serde_json::to_string(&self)?)
     }
 
-    pub fn save(&self) -> Result<(), ReadError> {
+    pub fn save(&self, path: &str) -> Result<(), ReadError> {
         let json = self.to_json_string()?;
-        crate::helpers::write("list.json", json)
+        crate::helpers::write(path, json)
     }
 }
 
